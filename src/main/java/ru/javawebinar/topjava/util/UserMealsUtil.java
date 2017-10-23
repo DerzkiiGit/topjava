@@ -3,13 +3,11 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,19 +32,26 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
- /*       List<UserMeal>filteredList=mealList.stream().filter(p->(p.getDateTime().toLocalTime().isAfter(startTime)
-                &&p.getDateTime().toLocalTime().isBefore(endTime)
-                &&p.getCalories()>caloriesPerDay)).collect(Collectors.toList());
-*/
+
+        Map<LocalDate,Integer>  dateCaloriesMap=mealList.stream().collect(Collectors.toMap(s->s.getDateTime().toLocalDate(),
+                UserMeal::getCalories,(oldVal,newVal)->oldVal+newVal,HashMap::new));
+
         List<UserMealWithExceed>result = new ArrayList<>();
+
         for (UserMeal userMeal :mealList) {
 
-            if(userMeal.getDateTime().toLocalTime().isAfter(startTime)&&userMeal.getDateTime().toLocalTime().isBefore(endTime)&&userMeal.getCalories()>caloriesPerDay){
-                result.add(new UserMealWithExceed(userMeal.getDateTime(),userMeal.getDescription(),userMeal.getCalories(),true));
-            }else {
-                result.add(new UserMealWithExceed(userMeal.getDateTime(),userMeal.getDescription(),userMeal.getCalories(),false));
-            }
+            if(userMeal.getDateTime().toLocalTime().isAfter(startTime)&&userMeal.getDateTime().toLocalTime().isBefore(endTime)){
 
+                UserMealWithExceed exceedMeal;
+
+                if(dateCaloriesMap.get(userMeal.getDateTime().toLocalDate())>caloriesPerDay){
+                    exceedMeal=new UserMealWithExceed(userMeal.getDateTime(),userMeal.getDescription(),userMeal.getCalories(),true);
+                }else{
+                    exceedMeal=new UserMealWithExceed(userMeal.getDateTime(),userMeal.getDescription(),userMeal.getCalories(),false);
+                }
+
+                result.add(exceedMeal);
+            }
 
         }
 
