@@ -14,17 +14,32 @@
 </style>
 
 <c:out value="Meals List"/>
+<table>
+    <tr>
+        <th width="150px">Date And Time</th>
+        <th width="60px">Description</th>
+        <th width="30px">Calories</th>
+    </tr>
 <c:forEach var="meal" items="${mealsList}">
+
     <c:choose>
         <c:when test="${meal.exceed}">
-            <h1 class="red">${meal.dateTime} ${meal.description} ${meal.calories}</h1>
+            <tr class="red">
+            <td>${meal.dateTime.format(formatter)}</td>
+             <td>${meal.description}</td>
+             <td>${meal.calories}</td>
+            </tr>
         </c:when>
         <c:otherwise>
-            <h1>${meal.dateTime} ${meal.description} ${meal.calories}</h1>
+            <tr>
+                <td>${meal.dateTime.format(formatter)}</td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
+            </tr>
         </c:otherwise>
     </c:choose>
 </c:forEach>
-
+</table>
 
 </body>
 </html>
