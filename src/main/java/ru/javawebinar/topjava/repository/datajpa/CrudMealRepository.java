@@ -17,10 +17,9 @@ import java.util.List;
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
 
-
     @Transactional
     @Query("Select m from Meal m WHERE m.id=:id and m.user.id=:userId")
-     Meal findMealByIdAndUser_id(@Param("id")int id,@Param("userId") int userId);
+    Meal findMealByIdAndUser_id(@Param("id")int id,@Param("userId") int userId);
 
     @Transactional
     @Query(Meal.ALL_SORTED)
@@ -30,7 +29,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     default Meal save(Meal meal, int userId){
         User ref = getUserByID(userId);
         meal.setUser(ref);
-       return save(meal);
+        return save(meal);
     }
     @Transactional
     @Query("SELECT u From User u Where u.id=:id")
@@ -47,4 +46,5 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Transactional
     @Query(Meal.DELETE)
     int delete(@Param("id")int id,@Param("userId")int userId);
+
 }

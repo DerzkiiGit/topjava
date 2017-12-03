@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public class DataJpaMealRepositoryImpl implements MealRepository {
 
-
     @Autowired
     private CrudMealRepository crudRepository;
 
@@ -40,4 +39,5 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         return crudRepository.getBetween(startDate, endDate, userId);
     }
+
 }
