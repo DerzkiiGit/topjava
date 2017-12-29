@@ -1,8 +1,16 @@
 package ru.javawebinar.topjava;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.web.json.JacksonObjectMapper;
 
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +33,9 @@ public class MealTestData {
 
     public static final List<Meal> MEALS = Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
 
+
+    protected static ObjectMapper jsonMapper= JacksonObjectMapper.getMapper();
+
     public static Meal getCreated() {
         return new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Созданный ужин", 300);
     }
@@ -44,4 +55,30 @@ public class MealTestData {
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields("user").isEqualTo(expected);
     }
+
+    public static List<Meal> getListMeals(MvcResult mvcResult) throws Exception{
+        List<Meal> meals = new ArrayList<>();
+        String jsonString = mvcResult.getResponse().getContentAsString();
+
+        JsonNode rootNode = jsonMapper.readTree(jsonString);
+
+        if (rootNode.isArray()){
+            List<MealWithExceed> mealsExc=  jsonMapper.readValue(jsonString, new TypeReference<List<MealWithExceed>>(){});
+            for (MealWithExceed mealWithExceed :mealsExc) {
+                Meal meal = new Meal(mealWithExceed.getId(),mealWithExceed.getDateTime(),mealWithExceed.getDescription(),mealWithExceed.getCalories());
+                meals.add(meal);
+            }
+        } else{
+            MealWithExceed mealWithExceed = jsonMapper.readValue(jsonString, new TypeReference<MealWithExceed>(){});
+            meals.add(new Meal(mealWithExceed.getId(),mealWithExceed.getDateTime(),mealWithExceed.getDescription(),mealWithExceed.getCalories()));
+        }
+
+
+        return meals;
+    }
+
+    public static Meal getMeal(MvcResult mvcResult) throws Exception{
+        return jsonMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<Meal>(){});
+    }
+
 }

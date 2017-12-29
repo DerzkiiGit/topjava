@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javawebinar.topjava.AllActiveProfileResolver;
 import ru.javawebinar.topjava.repository.JpaUtil;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.web.json.JacksonObjectMapper;
 
 import javax.annotation.PostConstruct;
 
@@ -47,6 +50,11 @@ abstract public class AbstractControllerTest {
 
     @Autowired
     protected UserService userService;
+
+    @Autowired
+    protected MealService mealService;
+
+
 
     @Autowired
     private WebApplicationContext webApplicationContext;

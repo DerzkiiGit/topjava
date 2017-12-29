@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.to;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 
 public class MealWithExceed {
@@ -13,6 +15,14 @@ public class MealWithExceed {
 
     private final boolean exceed;
 
+    public MealWithExceed() {
+        id=null;
+        dateTime=null;
+        description=null;
+        calories=0;
+        exceed=false;
+    }
+
     public MealWithExceed(Integer id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
         this.id = id;
         this.dateTime = dateTime;
@@ -20,6 +30,8 @@ public class MealWithExceed {
         this.calories = calories;
         this.exceed = exceed;
     }
+
+
 
     public Integer getId() {
         return id;
