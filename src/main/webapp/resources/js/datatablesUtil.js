@@ -8,6 +8,11 @@ function makeEditable() {
         return false;
     });
 
+    $("#filterForm").submit(function(){
+        filter();
+        return false
+    });
+
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
@@ -28,6 +33,19 @@ function deleteRow(id) {
         success: function () {
             updateTable();
             successNoty("Deleted");
+        }
+    });
+}
+
+function filter(){
+    var form =$("#filterForm");
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl+"/filter",
+        data: form.serialize(),
+        success:function (data) {
+            datatableApi.clear().rows.add(data).draw();
+            successNoty("Filtered")
         }
     });
 }
